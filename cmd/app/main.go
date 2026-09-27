@@ -1,37 +1,54 @@
 package main
 
 import (
+	"bank/internal/bank"
 	"bank/internal/domain"
-	"bank/internal/pay"
 	"fmt"
 )
 
 func main() {
-	user1 := &pay.User{User: &domain.User{
+	user1 := domain.User{
 		ID:      "1",
 		Name:    "Вася",
 		Balance: 1000.0,
-	},
 	}
 
-	user2 := &pay.User{User: &domain.User{
+	user2 := domain.User{
 		ID:      "2",
 		Name:    "Жора",
 		Balance: 0.0,
-	},
 	}
 
-	user1.Deposit(22.0)
-
-	fmt.Println(user1.Balance)
-
-	_, err := user2.Withdraw(233.0)
-	if err != nil {
-		fmt.Println(err)
+	p := bank.PaymentSystem{
+		Users: make(map[string]*domain.User),
 	}
 
-	user2.Deposit(34223.0)
+	p.AddUser(&user1)
+	p.AddUser(&user2)
 
-	fmt.Println(user2.Balance)
+	t := domain.Transaction{
+		FromID: "1",
+		ToID:   "2",
+		Amount: 500.0,
+	}
+
+	t2 := domain.Transaction{
+		FromID: "2",
+		ToID:   "1",
+		Amount: 500.0,
+	}
+
+	p.AddTransaction(&t)
+	p.AddTransaction(&t2)
+
+	for _, v := range p.Transactions {
+		err := p.ProcessingTransactions(&v)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(user1.Balance)
+		fmt.Println(user2.Balance)
+	}
 
 }

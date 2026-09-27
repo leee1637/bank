@@ -1,0 +1,35 @@
+package bank
+
+import (
+	"bank/internal/domain"
+	"fmt"
+)
+
+func (p *PaymentSystem) AddUser(u *domain.User) {
+	p.Users[u.ID] = u
+}
+
+func (p *PaymentSystem) AddTransaction(t *domain.Transaction) {
+	p.Transactions = append(p.Transactions, *t)
+}
+
+func (p *PaymentSystem) ProcessingTransactions(t *domain.Transaction) error {
+	fromUser, ok := p.Users[t.FromID]
+	if !ok {
+		return fmt.Errorf("Пользователь, который отправляет - не найден - отказ")
+	}
+
+	toUser, ok := p.Users[t.ToID]
+	if !ok {
+		return fmt.Errorf("Пользователь, который получает - не найден - отказ")
+	}
+
+	_, err := Withdraw(fromUser, t.Amount)
+	if err != nil {
+		return err
+	}
+
+	Deposit(toUser, t.Amount)
+
+	return nil
+}

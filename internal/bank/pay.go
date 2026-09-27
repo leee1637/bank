@@ -1,20 +1,16 @@
-package pay
+package bank
 
 import (
 	"bank/internal/domain"
 	"fmt"
 )
 
-type User struct {
-	*domain.User
-}
-
-func (u *User) Deposit(num float64) float64 {
+func Deposit(u *domain.User, num float64) float64 {
 	u.Balance = u.Balance + num
 	return u.Balance
 }
 
-func (u *User) Withdraw(num float64) (float64, error) {
+func Withdraw(u *domain.User, num float64) (float64, error) {
 	if (u.Balance - num) < 0 {
 		return 0, fmt.Errorf("Недостаточно средств!")
 	}
