@@ -4,6 +4,7 @@ import (
 	"bank/internal/bank"
 	"bank/internal/domain"
 	"fmt"
+	"sync"
 )
 
 func main() {
@@ -26,29 +27,56 @@ func main() {
 	p.AddUser(&user1)
 	p.AddUser(&user2)
 
-	t := domain.Transaction{
+	ch := make(chan *domain.Transaction, 4)
+
+	ch <- &domain.Transaction{
 		FromID: "1",
 		ToID:   "2",
 		Amount: 500.0,
 	}
 
-	t2 := domain.Transaction{
+	ch <- &domain.Transaction{
 		FromID: "2",
 		ToID:   "1",
 		Amount: 500.0,
 	}
 
-	p.AddTransaction(&t)
-	p.AddTransaction(&t2)
+	ch <- &domain.Transaction{
+		FromID: "1",
+		ToID:   "2",
+		Amount: 500.0,
+	}
 
-	for _, v := range p.Transactions {
-		err := p.ProcessingTransactions(&v)
-		if err != nil {
-			fmt.Println(err)
-		}
+	ch <- &domain.Transaction{
+		FromID: "1",
+		ToID:   "2",
+		Amount: 500.0,
+	}
+
+	wg := sync.WaitGroup{}
+
+	close(ch)
+	for i := 0; i < 3; i++ {
+		wg.Go(func() {
+			for t := range ch {
+				worker(t, &p)
+			}
+		})
 
 		fmt.Println(user1.Balance)
 		fmt.Println(user2.Balance)
 	}
 
+	wg.Wait()
+
+	// p.AddTransaction(&t)
+	// p.AddTransaction(&t2)
+
+}
+
+func worker(ch *domain.Transaction, p *bank.PaymentSystem) {
+	err := p.ProcessingTransactions(ch)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
