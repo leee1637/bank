@@ -42,7 +42,6 @@ func (p *PaymentSystem) Worker(wg *sync.WaitGroup, ch <-chan domain.Transaction)
 		err := p.ProcessingTransactions(v)
 		if err != nil {
 			fmt.Println(err)
-			return
 		}
 		fmt.Println("Обработал одну транзакцию!")
 	}
