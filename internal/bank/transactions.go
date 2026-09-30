@@ -16,20 +16,20 @@ func (p *PaymentSystem) AddTransaction(t *domain.Transaction) {
 func (p *PaymentSystem) ProcessingTransactions(t *domain.Transaction) error {
 	fromUser, ok := p.Users[t.FromID]
 	if !ok {
-		return fmt.Errorf("Пользователь, который отправляет - не найден - отказ")
+		return fmt.Errorf("User not found")
 	}
 
 	toUser, ok := p.Users[t.ToID]
 	if !ok {
-		return fmt.Errorf("Пользователь, который получает - не найден - отказ")
+		return fmt.Errorf("To pay User not found")
 	}
 
-	_, err := Withdraw(fromUser, t.Amount)
+	_, err := fromUser.Withdraw(t.Amount)
 	if err != nil {
 		return err
 	}
 
-	Deposit(toUser, t.Amount)
+	toUser.Deposit(t.Amount)
 
 	return nil
 }
