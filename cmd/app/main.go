@@ -57,7 +57,10 @@ func main() {
 
 	for i := 0; i < 5; i++ {
 		wg.Add(1)
-		go p.Worker(&wg, ch)
+		go err := p.Worker(&wg, ch)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	for _, v := range p.TransactionQueue {

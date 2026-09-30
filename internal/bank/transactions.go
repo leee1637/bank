@@ -39,7 +39,12 @@ func (p *PaymentSystem) Worker(wg *sync.WaitGroup, ch <-chan domain.Transaction)
 	defer wg.Done()
 
 	for v := range ch {
-		p.ProcessingTransactions(v)
+		err := p.ProcessingTransactions(v)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		fmt.Println("Обработал одну транзакцию!")
 	}
+
 }
