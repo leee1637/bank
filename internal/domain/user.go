@@ -11,7 +11,7 @@ func (u *User) Deposit(num float64) float64 {
 
 func (u *User) Withdraw(num float64) (float64, error) {
 	if (u.Balance - num) < 0 {
-		return 0, fmt.Errorf("Недостаточно средств!")
+		return 0, fmt.Errorf("No cash more!")
 	}
 
 	u.Balance = u.Balance - num

@@ -3,6 +3,7 @@ package bank
 import (
 	"bank/internal/domain"
 	"fmt"
+	"sync"
 )
 
 func (p *PaymentSystem) AddUser(u *domain.User) {
@@ -10,10 +11,10 @@ func (p *PaymentSystem) AddUser(u *domain.User) {
 }
 
 func (p *PaymentSystem) AddTransaction(t *domain.Transaction) {
-	p.Transactions = append(p.Transactions, *t)
+	p.TransactionQueue = append(p.TransactionQueue, *t)
 }
 
-func (p *PaymentSystem) ProcessingTransactions(t *domain.Transaction) error {
+func (p *PaymentSystem) ProcessingTransactions(t domain.Transaction) error {
 	fromUser, ok := p.Users[t.FromID]
 	if !ok {
 		return fmt.Errorf("User not found")
@@ -32,4 +33,13 @@ func (p *PaymentSystem) ProcessingTransactions(t *domain.Transaction) error {
 	toUser.Deposit(t.Amount)
 
 	return nil
+}
+
+func (p *PaymentSystem) Worker(wg *sync.WaitGroup, ch <-chan domain.Transaction) {
+	defer wg.Done()
+
+	for v := range ch {
+		p.ProcessingTransactions(v)
+		fmt.Println("Обработал одну транзакцию!")
+	}
 }
