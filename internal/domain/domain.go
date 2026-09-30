@@ -7,7 +7,7 @@ type User struct {
 	Name    string
 	Balance float64
 
-	Mu *sync.Mutex
+	Mu sync.Mutex
 }
 
 type Transaction struct {
