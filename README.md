@@ -27,10 +27,10 @@ bank/
 │       └── main.go                  # точка входа, сборка канала и воркеров
 ├── internal/
 │   ├── domain/
+│       ├── user.go                   # Deposit, Withdraw — операции над счётом
 │   │   └── domain.go                # доменная модель: User, Transaction
 │   └── bank/
 │       ├── bank.go                  # PaymentSystem — состояние системы
-│       ├── pay.go                   # Deposit, Withdraw — операции над счётом
 │       └── transactions.go          # AddUser, AddTransaction, ProcessingTransactions
 ├── go.mod
 └── README.md
