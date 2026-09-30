@@ -24,10 +24,10 @@ bank/
 │       └── main.go                  # точка входа, демонстрация работы
 ├── internal/
 │   ├── domain/
+│       ├── user.go                   # Deposit, Withdraw — операции над счётом
 │   │   └── domain.go                # доменная модель: User, Transaction
 │   └── bank/
 │       ├── bank.go                  # PaymentSystem — состояние системы
-│       ├── pay.go                   # Deposit, Withdraw — операции над счётом
 │       └── transactions.go          # работа с транзакциями
 ├── go.mod
 └── README.md
