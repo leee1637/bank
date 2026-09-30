@@ -50,7 +50,7 @@ func main() {
 	ch <- &domain.Transaction{
 		FromID: "1",
 		ToID:   "2",
-		Amount: 500.0,
+		Amount: 5000.0,
 	}
 
 	wg := sync.WaitGroup{}
@@ -63,12 +63,12 @@ func main() {
 			}
 		})
 
-		fmt.Println(user1.Balance)
-		fmt.Println(user2.Balance)
 	}
 
 	wg.Wait()
 
+	fmt.Println(user1.Balance)
+	fmt.Println(user2.Balance)
 	// p.AddTransaction(&t)
 	// p.AddTransaction(&t2)
 
